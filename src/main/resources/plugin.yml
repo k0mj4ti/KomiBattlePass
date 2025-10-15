@@ -1,0 +1,11 @@
+name: KomiBattlePass
+version: '1.0'
+main: me.sheephun.komiBattlePass.KomiBattlePass
+api-version: '1.21'
+softdepend: [SmartInvs, GhostRoyale]
+commands:
+  battlepass:
+    description: Battlepass
+    usage: /<command>
+    aliases:
+      - bp

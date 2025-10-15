@@ -1,0 +1,111 @@
+daily:
+  kill_10_players:
+    id: kill_10_players
+    name: "Eliminator"
+    description: "Kill 10 players."
+    xp: 250
+    target: 10
+    type: KILL_PLAYER
+    rewards:
+      - type: gold
+        amount: 100
+      - type: command
+        data: "say %player% completed a daily mission!"
+
+  break_50_blocks:
+    id: break_50_blocks
+    name: "Miner"
+    description: "Break 50 blocks."
+    xp: 200
+    target: 50
+    type: BREAK_BLOCK
+    rewards:
+      - type: gold
+        amount: 50
+
+  craft_5_items:
+    id: craft_5_items
+    name: "Crafter"
+    description: "Craft 5 items."
+    xp: 150
+    target: 5
+    type: CRAFT_ITEM
+    rewards:
+      - type: command
+        data: "give %player% iron_ingot 3"
+
+
+weekly:
+  win_10_matches:
+    id: win_10_matches
+    name: "Champion"
+    description: "Win 10 matches this week."
+    xp: 1200
+    target: 10
+    type: EXTERNAL
+    rewards:
+      - type: gold
+        amount: 1000
+      - type: cosmetic
+        data: "cape_champion"
+
+  play_50_matches:
+    id: play_50_matches
+    name: "Veteran"
+    description: "Play 50 matches this week."
+    xp: 1000
+    target: 50
+    type: EXTERNAL
+    rewards:
+      - type: gold
+        amount: 800
+
+  collect_100_items:
+    id: collect_100_items
+    name: "Hoarder"
+    description: "Collect 100 items."
+    xp: 900
+    target: 100
+    type: EXTERNAL
+    rewards:
+      - type: gold
+        amount: 500
+      - type: command
+        data: "say %player% completed a weekly mission!"
+
+
+onetime:
+  join_first_time:
+    id: join_first_time
+    name: "Welcome!"
+    description: "Join the server for the first time."
+    xp: 500
+    target: 1
+    type: EXTERNAL
+    rewards:
+      - type: gold
+        amount: 250
+
+  kill_100_players:
+    id: kill_100_players
+    name: "Serial Killer"
+    description: "Kill 100 players total."
+    xp: 3000
+    target: 100
+    type: KILL_PLAYER
+    rewards:
+      - type: gold
+        amount: 2500
+      - type: cosmetic
+        data: "title_slayer"
+
+  craft_100_items:
+    id: craft_100_items
+    name: "Master Craftsman"
+    description: "Craft 100 total items."
+    xp: 2000
+    target: 100
+    type: CRAFT_ITEM
+    rewards:
+      - type: command
+        data: "say %player% completed the 'Master Craftsman' mission!"

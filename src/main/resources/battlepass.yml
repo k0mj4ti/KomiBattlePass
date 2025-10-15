@@ -1,0 +1,43 @@
+season: 1
+max-level: 50
+xp-per-level: 1000
+
+tiers:
+  1:
+    free:
+      name: "&aWelcome Gift"
+      description: "Your first step on the road."
+      reward:
+        type: command
+        data: "give %player% iron_sword 1"
+    premium:
+      name: "&6Sigma Starter"
+      description: "Premium welcome package!"
+      reward:
+        type: gold
+        amount: 1000
+  2:
+    premium:
+      name: "&bRookie Bonus"
+      description: "You survived your first match!"
+      reward:
+        type: gold
+        amount: 500
+  3:
+    premium:
+      name: "&eCosmetic: Skyfall Parachute"
+      description: "Exclusive parachute skin."
+      reward:
+        type: cosmetic
+        data: "parachute_skyfall"
+  4:
+    free:
+      name: "&6Booster Pack"
+      description: "XP Boost for 1 hour"
+      reward:
+        type: multiple
+        items:
+          - type: gold
+            amount: 250
+          - type: command
+            data: "give %player% exp_bottle 5"
