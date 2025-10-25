@@ -1,6 +1,7 @@
 package me.sheephun.komiBattlePass.util;
 
 import me.sheephun.komiBattlePass.data.MissionProgress;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -10,77 +11,131 @@ import java.util.List;
 
 public class IconUtil {
 
-    public static ItemStack battlePassIcon() {
-        ItemStack item = new ItemStack(Material.EMERALD);
-        ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName("§aBattlePass");
-        item.setItemMeta(meta);
-        return item;
-    }
 
-    public static ItemStack missionsIcon() {
-        ItemStack item = new ItemStack(Material.PAPER);
-        ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName("§eMissions");
-        item.setItemMeta(meta);
-        return item;
+    public static ItemStack backButtonIcon(){
+        return customItem(ChatColor.RED + "Back", new ArrayList<>());
     }
-
-    public static ItemStack freeIcon() {
-        ItemStack item = new ItemStack(Material.LIME_STAINED_GLASS_PANE);
-        ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName("§aFree Tiers");
-        item.setItemMeta(meta);
-        return item;
+    public static ItemStack closeButtonIcon(){
+        return customItem(ChatColor.RED + "Close", new ArrayList<>());
     }
-
-    public static ItemStack premiumIcon() {
-        ItemStack item = new ItemStack(Material.GOLD_BLOCK);
-        ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName("§6Premium Tiers");
-        item.setItemMeta(meta);
-        return item;
+    public static ItemStack nextPageIcon(){
+        return customItem(ChatColor.YELLOW + "Next Page", new ArrayList<>());
     }
-
-    public static ItemStack barrier() {
+    public static ItemStack previousPageIcon(){
+        return customItem(ChatColor.YELLOW + "Previous Page", new ArrayList<>());
+    }
+    public static ItemStack noTierIcon(){
         ItemStack item = new ItemStack(Material.BARRIER);
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName("§cNo Tier");
+        meta.setDisplayName(ChatColor.RED + "No Tier");
         item.setItemMeta(meta);
         return item;
     }
 
-    public static ItemStack nextPage() {
-        ItemStack item = new ItemStack(Material.ARROW);
-        ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName("§aNext Page");
-        item.setItemMeta(meta);
-        return item;
+    public static ItemStack getPremiumIcon() {
+        List<String> lore = new ArrayList<>();
+        lore.add(ChatColor.GRAY + "Unlock exclusive rewards and bonuses!");
+        lore.add(ChatColor.GRAY + "Access premium-only tiers and cosmetics.");
+        lore.add("");
+        lore.add(ChatColor.DARK_GREEN + "⚡ " + ChatColor.GREEN + "Upgrade your Battle Pass today!");
+        lore.add(ChatColor.GRAY + "Visit: " + ChatColor.GREEN + ChatColor.UNDERLINE + "store.ghostempire.gg");
+        lore.add("");
+        lore.add(ChatColor.DARK_GREEN + "» " + ChatColor.WHITE + "Click to open the store!");
+
+        return customItem(ChatColor.GREEN + "" + ChatColor.BOLD + "Get Premium", lore);
     }
 
-    public static ItemStack previousPage() {
-        ItemStack item = new ItemStack(Material.ARROW);
-        ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName("§aPrevious Page");
-        item.setItemMeta(meta);
-        return item;
+    public static ItemStack getRewardsIcon() {
+        List<String> lore = new ArrayList<>();
+        lore.add(ChatColor.GRAY + "View and claim your unlocked rewards!");
+        lore.add("");
+        lore.add(ChatColor.GOLD + "🎁 " + ChatColor.YELLOW + "Collect tiers, cosmetics, and more!");
+        lore.add("");
+        lore.add(ChatColor.GOLD + "» " + ChatColor.WHITE + "Click to open Rewards Menu!");
+
+        return customItem(ChatColor.YELLOW + "" + ChatColor.BOLD + "Rewards", lore);
     }
 
-    public static ItemStack backButton() {
-        ItemStack item = new ItemStack(Material.OAK_DOOR);
+    public static ItemStack getMissionsIcon() {
+        List<String> lore = new ArrayList<>();
+        lore.add(ChatColor.GRAY + "Complete missions to earn Battle Pass XP!");
+        lore.add("");
+        lore.add(ChatColor.YELLOW + "✅ " + ChatColor.GOLD + "Daily and Weekly tasks await!");
+        lore.add("");
+        lore.add(ChatColor.YELLOW + "» " + ChatColor.WHITE + "Click to open Missions Menu!");
+
+        return customItem(ChatColor.GOLD + "" + ChatColor.BOLD + "Missions", lore);
+    }
+
+    public static ItemStack getPlayerStatsIcon(String playerName, boolean isPremium, float xp) {
+        int level = (int) (xp / 1000); // each level = 1000 XP
+        float progress = (xp % 1000) / 1000f; // fraction of next level
+
+        int totalBars = 10;
+        int filledBars = Math.round(totalBars * progress);
+        int emptyBars = totalBars - filledBars;
+
+        StringBuilder bar = new StringBuilder();
+        for (int i = 0; i < filledBars; i++) bar.append("§a█");
+        for (int i = 0; i < emptyBars; i++) bar.append("§7█");
+
+        List<String> lore = new ArrayList<>();
+        lore.add(ChatColor.GRAY + "Player: " + ChatColor.WHITE + playerName);
+        lore.add(ChatColor.GRAY + "Premium: " + (isPremium ? ChatColor.GREEN + "Yes" : ChatColor.RED + "No"));
+        lore.add(ChatColor.GRAY + "Level: " + ChatColor.YELLOW + level);
+        lore.add(ChatColor.GRAY + "Progress: " + bar + ChatColor.YELLOW + String.format(" (%.0f%%)", progress * 100));
+        lore.add("");
+        lore.add(ChatColor.YELLOW + "🌟 Keep progressing to unlock more rewards!");
+
+        return customItem(ChatColor.YELLOW + "" + ChatColor.BOLD + "Your Stats", lore);
+    }
+
+
+    public static ItemStack getDailyQuestsIcon() {
+        List<String> lore = new ArrayList<>();
+        lore.add(ChatColor.GRAY + "Complete daily challenges to earn XP!");
+        lore.add(ChatColor.GRAY + "New quests appear every 24 hours.");
+        lore.add("");
+        lore.add(ChatColor.DARK_GREEN + "☀" + ChatColor.GREEN + " Log in daily and keep the streak going!");
+        lore.add("");
+        lore.add(ChatColor.DARK_GREEN + "» " + ChatColor.WHITE  + "Click to view Daily Quests!");
+
+        return customItem(ChatColor.GREEN + "" + ChatColor.BOLD + "Daily Quests", lore);
+    }
+
+    public static ItemStack getWeeklyQuestsIcon() {
+        List<String> lore = new ArrayList<>();
+        lore.add(ChatColor.GRAY + "Take on bigger challenges each week!");
+        lore.add(ChatColor.GRAY + "Earn massive XP boosts for completion.");
+        lore.add("");
+        lore.add(ChatColor.GOLD + "🗓 " + ChatColor.YELLOW + "Weekly reset every Monday!");
+        lore.add("");
+        lore.add(ChatColor.GOLD + "» " + ChatColor.WHITE + "Click to view Weekly Quests!");
+
+        return customItem(ChatColor.YELLOW + "" + ChatColor.BOLD + "Weekly Quests", lore);
+    }
+
+    public static ItemStack getAllTimeQuestsIcon() {
+        List<String> lore = new ArrayList<>();
+        lore.add(ChatColor.GRAY + "Long-term goals for dedicated players!");
+        lore.add(ChatColor.GRAY + "Progress tracked across all seasons.");
+        lore.add("");
+        lore.add(ChatColor.YELLOW + "🏆 " + ChatColor.GOLD + "Prove your legacy and earn exclusive rewards!");
+        lore.add("");
+        lore.add(ChatColor.YELLOW + "» " + ChatColor.WHITE + "Click to view All-Time Quests!");
+
+        return customItem(ChatColor.GOLD + "" + ChatColor.BOLD + "All-Time Quests", lore);
+    }
+
+
+    public static ItemStack customItem(String displayName, List<String> lore){
+        ItemStack item = new ItemStack(Material.PAPER);
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName("§cBack");
+        meta.setCustomModelData(1117);
+        meta.setDisplayName(displayName);
+        meta.setLore(lore);
         item.setItemMeta(meta);
         return item;
-    }
-    public static ItemStack barrierNoTier() {
-        ItemStack barrier = new ItemStack(Material.BARRIER);
-        ItemMeta meta = barrier.getItemMeta();
-        if (meta != null) {
-            meta.setDisplayName("§cNo Tier"); // Red “No Tier” label
-            barrier.setItemMeta(meta);
-        }
-        return barrier;
     }
 
 

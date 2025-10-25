@@ -3,6 +3,7 @@ package me.sheephun.komiBattlePass;
 import fr.minuskube.inv.InventoryManager;
 import fr.minuskube.inv.SmartInvsPlugin;
 import me.sheephun.komiBattlePass.Commands.Battlepass;
+import me.sheephun.komiBattlePass.Commands.test;
 import me.sheephun.komiBattlePass.data.ResetTimer;
 import me.sheephun.komiBattlePass.managers.BattlePassManager;
 import me.sheephun.komiBattlePass.managers.MissionManager;
@@ -49,6 +50,7 @@ public final class KomiBattlePass extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerLeaveListener(), this);
 
         getCommand("battlepass").setExecutor(new Battlepass());
+        getCommand("test").setExecutor(new test());
 
         saveTimer();
         getServer().getConsoleSender().sendMessage("KomiBattlePass is now running.");

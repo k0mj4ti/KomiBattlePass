@@ -4,6 +4,9 @@ main: me.sheephun.komiBattlePass.KomiBattlePass
 api-version: '1.21'
 softdepend: [SmartInvs, GhostRoyale]
 commands:
+  test:
+    description: Test
+    usage: /<command>
   battlepass:
     description: Battlepass
     usage: /<command>

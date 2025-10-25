@@ -10,6 +10,7 @@ import me.sheephun.komiBattlePass.data.PlayerData;
 import me.sheephun.komiBattlePass.managers.BattlePassManager;
 import me.sheephun.komiBattlePass.managers.PlayerDataManager;
 import me.sheephun.komiBattlePass.util.IconUtil;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import java.util.Map;
@@ -27,7 +28,7 @@ public class BattlePassMenu implements InventoryProvider {
                 .id("battlepass-menu")
                 .provider(new BattlePassMenu(page))
                 .size(6, 9)
-                .title("BattlePass")
+                .title("<shift:-7><glyph:rewardsmenu>")
                 .manager(KomiBattlePass.getInvManager())
                 .build()
                 .open(player);
@@ -40,62 +41,72 @@ public class BattlePassMenu implements InventoryProvider {
         Map<Integer, BattlePassTier> freeTiers = manager.getFreeTiers();
         Map<Integer, BattlePassTier> premiumTiers = manager.getPremiumTiers();
 
-        int tiersPerPage = 8; // 8 levels per page
+        int tiersPerPage = 9;
         int startLevel = (page - 1) * tiersPerPage + 1;
         int endLevel = startLevel + tiersPerPage - 1;
 
-        int freeRow = 1;      // Row for free tiers
-        int premiumRow = 3;   // Row for premium tiers
+        int freeRow = 1;
+        int premiumRow = 3;
 
-
-        // Place row labels FIRST (in column 0)
-        contents.set(freeRow, 0, ClickableItem.empty(IconUtil.freeIcon()));
-        contents.set(premiumRow, 0, ClickableItem.empty(IconUtil.premiumIcon()));
-
-        // Place tiers for each level
         for (int level = startLevel; level <= endLevel; level++) {
-            int col = (level - startLevel) + 1; // Column 1-8 for levels
+            int col = (level - startLevel);
 
-            // Place free tier if exists
+            // --- FREE TIER ---
             BattlePassTier freeTier = freeTiers.get(level);
             if (freeTier != null) {
                 boolean claimed = PlayerDataManager.hasClaimedTier(player.getUniqueId(), level, false);
                 final int currentLevel = level;
-                contents.set(freeRow, col, ClickableItem.of(
-                        freeTier.getIcon(claimed),
-                        e -> PlayerDataManager.claimBattlePassTier(player.getUniqueId(), currentLevel, false)
-                ));
+
+                if (claimed) {
+                    // Unclickable if already claimed
+                    contents.set(freeRow, col, ClickableItem.empty(freeTier.getIcon(true, data)));
+                } else {
+                    // Clickable if not claimed
+                    contents.set(freeRow, col, ClickableItem.of(
+                            freeTier.getIcon(false, data),
+                            e -> {
+                                PlayerDataManager.claimBattlePassTier(player.getUniqueId(), currentLevel, false);
+                                open(player, page);
+                            }
+                    ));
+                }
             } else {
-                contents.set(freeRow, col, ClickableItem.empty(IconUtil.barrierNoTier()));
+                contents.set(freeRow, col, ClickableItem.empty(IconUtil.noTierIcon()));
             }
 
-            // Place premium tier if exists
+            // --- PREMIUM TIER ---
             BattlePassTier premiumTier = premiumTiers.get(level);
             if (premiumTier != null) {
                 boolean claimed = PlayerDataManager.hasClaimedTier(player.getUniqueId(), level, true);
                 final int currentLevel = level;
-                contents.set(premiumRow, col, ClickableItem.of(
-                        premiumTier.getIcon(claimed),
-                        e -> PlayerDataManager.claimBattlePassTier(player.getUniqueId(), currentLevel, true)
-                ));
+
+                if (claimed) {
+                    contents.set(premiumRow, col, ClickableItem.empty(premiumTier.getIcon(true, data)));
+                } else {
+                    contents.set(premiumRow, col, ClickableItem.of(
+                            premiumTier.getIcon(false, data),
+                            e -> {
+                                PlayerDataManager.claimBattlePassTier(player.getUniqueId(), currentLevel, true);
+                                open(player, page);
+                            }
+                    ));
+                }
             } else {
-                contents.set(premiumRow, col, ClickableItem.empty(IconUtil.barrierNoTier()));
+                contents.set(premiumRow, col, ClickableItem.empty(IconUtil.noTierIcon()));
             }
         }
 
-        // Page navigation
-        contents.set(5, 0, ClickableItem.of(IconUtil.previousPage(), e -> {
+        // --- NAVIGATION ---
+        contents.set(5, 2, ClickableItem.of(IconUtil.previousPageIcon(), e -> {
             if (page > 1) open(player, page - 1);
+            player.playSound(player.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1, 1);
         }));
-        contents.set(5, 8, ClickableItem.of(IconUtil.nextPage(), e -> open(player, page + 1)));
-        contents.set(5, 4, ClickableItem.of(IconUtil.backButton(), e -> MainMenu.open(player)));
+        contents.set(5, 6, ClickableItem.of(IconUtil.nextPageIcon(), e -> {open(player, page + 1); player.playSound(player.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1, 1);}));
+        contents.set(5, 4, ClickableItem.of(IconUtil.backButtonIcon(), e -> {MainMenu.open(player); player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);}));
     }
-
-
-
 
     @Override
     public void update(Player player, InventoryContents contents) {
-        // Here you could dynamically update claimed tiers without reopening
+        // Optionally, you can refresh periodically if you want live updates
     }
 }

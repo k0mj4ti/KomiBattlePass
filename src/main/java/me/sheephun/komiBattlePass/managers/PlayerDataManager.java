@@ -11,6 +11,7 @@ import me.sheephun.komiBattlePass.storage.Database;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerKickEvent;
 
@@ -160,12 +161,14 @@ public class PlayerDataManager {
 
         if (tier == null) {
             player.sendMessage("§cThis tier does not exist!");
+            player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
             return;
         }
 
         // Check if already claimed
         if (hasClaimedTier(uuid, tierLevel, isPremium)) {
             player.sendMessage("§cYou have already claimed this tier!");
+            player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
             return;
         }
 
@@ -173,12 +176,14 @@ public class PlayerDataManager {
         int playerLevel = getBattlePassLevel(uuid);
         if (playerLevel < tierLevel) {
             player.sendMessage("§cYou must reach level " + tierLevel + " to claim this reward!");
+            player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
             return;
         }
 
         // Check if premium tier requires premium pass
         if (isPremium && !data.isPremium()) {
             player.sendMessage("§cYou need the Premium Battle Pass to claim this reward!");
+            player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
             return;
         }
 
@@ -188,6 +193,7 @@ public class PlayerDataManager {
         giveRewards(uuid, tier.getReward());
 
         player.sendMessage("§aYou have claimed: " + tier.getName());
+        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
     }
 
     // ---------------- Reward helper ----------------

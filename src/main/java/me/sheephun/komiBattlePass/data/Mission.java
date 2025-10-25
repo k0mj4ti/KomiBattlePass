@@ -93,11 +93,11 @@ public class Mission {
     }
 
     public ItemStack getIcon(MissionProgress progress) {
-        ItemStack item = new ItemStack(Material.PAPER);
+        ItemStack item = new ItemStack(Material.BOOK);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(name);
         List<String> lore = new ArrayList<>();
-        lore.add(description);
+        lore.add("§e" + description);
         lore.add("§7XP: " + xp);
         if(progress != null) {
             lore.add("§aProgress: " + progress.getProgress() + "/" + target);

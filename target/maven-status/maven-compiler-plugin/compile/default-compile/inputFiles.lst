@@ -1,5 +1,6 @@
 C:\Users\SheepHun\IdeaProjects\KomiBattlePass\src\main\java\me\sheephun\komiBattlePass\api\BattlePassAPI.java
 C:\Users\SheepHun\IdeaProjects\KomiBattlePass\src\main\java\me\sheephun\komiBattlePass\Commands\Battlepass.java
+C:\Users\SheepHun\IdeaProjects\KomiBattlePass\src\main\java\me\sheephun\komiBattlePass\Commands\test.java
 C:\Users\SheepHun\IdeaProjects\KomiBattlePass\src\main\java\me\sheephun\komiBattlePass\data\BattlePassTier.java
 C:\Users\SheepHun\IdeaProjects\KomiBattlePass\src\main\java\me\sheephun\komiBattlePass\data\Mission.java
 C:\Users\SheepHun\IdeaProjects\KomiBattlePass\src\main\java\me\sheephun\komiBattlePass\data\MissionProgress.java
@@ -9,9 +10,12 @@ C:\Users\SheepHun\IdeaProjects\KomiBattlePass\src\main\java\me\sheephun\komiBatt
 C:\Users\SheepHun\IdeaProjects\KomiBattlePass\src\main\java\me\sheephun\komiBattlePass\enums\MissionCategory.java
 C:\Users\SheepHun\IdeaProjects\KomiBattlePass\src\main\java\me\sheephun\komiBattlePass\enums\MissionType.java
 C:\Users\SheepHun\IdeaProjects\KomiBattlePass\src\main\java\me\sheephun\komiBattlePass\enums\RewardType.java
+C:\Users\SheepHun\IdeaProjects\KomiBattlePass\src\main\java\me\sheephun\komiBattlePass\gui\AllTimeMissionsMenu.java
 C:\Users\SheepHun\IdeaProjects\KomiBattlePass\src\main\java\me\sheephun\komiBattlePass\gui\BattlePassMenu.java
+C:\Users\SheepHun\IdeaProjects\KomiBattlePass\src\main\java\me\sheephun\komiBattlePass\gui\DailyMissionsMenu.java
 C:\Users\SheepHun\IdeaProjects\KomiBattlePass\src\main\java\me\sheephun\komiBattlePass\gui\MainMenu.java
-C:\Users\SheepHun\IdeaProjects\KomiBattlePass\src\main\java\me\sheephun\komiBattlePass\gui\MissionsMenu.java
+C:\Users\SheepHun\IdeaProjects\KomiBattlePass\src\main\java\me\sheephun\komiBattlePass\gui\MissionsMainMenu.java
+C:\Users\SheepHun\IdeaProjects\KomiBattlePass\src\main\java\me\sheephun\komiBattlePass\gui\WeeklyMissionsMenu.java
 C:\Users\SheepHun\IdeaProjects\KomiBattlePass\src\main\java\me\sheephun\komiBattlePass\KomiBattlePass.java
 C:\Users\SheepHun\IdeaProjects\KomiBattlePass\src\main\java\me\sheephun\komiBattlePass\managers\BattlePassManager.java
 C:\Users\SheepHun\IdeaProjects\KomiBattlePass\src\main\java\me\sheephun\komiBattlePass\managers\MissionManager.java
