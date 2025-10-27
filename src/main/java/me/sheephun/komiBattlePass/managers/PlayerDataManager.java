@@ -6,16 +6,23 @@ import me.sheephun.komiBattlePass.data.Mission;
 import me.sheephun.komiBattlePass.data.MissionProgress;
 import me.sheephun.komiBattlePass.data.PlayerData;
 import me.sheephun.komiBattlePass.data.Reward;
+import me.sheephun.komiBattlePass.enums.MissionType;
 import me.sheephun.komiBattlePass.enums.RewardType;
 import me.sheephun.komiBattlePass.storage.Database;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerKickEvent;
 
 import java.util.*;
+
+import static me.sheephun.komiBattlePass.managers.MissionManager.getMissionById;
+import static me.sheephun.komiBattlePass.managers.MissionManager.getMissionsByType;
 
 public class PlayerDataManager {
 
@@ -63,21 +70,29 @@ public class PlayerDataManager {
         return data.getMissions().get(missionId);
     }
 
-    public static void addMissionProgress(UUID uuid, String missionId, int amount) {
-        PlayerData data = allPlayers.get(uuid);
-        if (data == null) return;
+    public static void addProgress(Mission mission, MissionProgress missionProgress, Player player, Map<String, MissionProgress> missionProgressMap, PlayerData playerData, int amount){
+        if (missionProgress.getProgress() >= mission.getTarget()){
+            return;
+        }
+        int target = mission.getTarget();
+        missionProgress.addProgress(amount);
+        int progress = missionProgress.getProgress();
+        missionProgress.setLastUpdated(System.currentTimeMillis());
+        missionProgressMap.replace(mission.getId(), missionProgress);
+        playerData.setMissions(missionProgressMap);
+        if (progress >= target){
+            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+            String message = ChatColor.GOLD + "" + ChatColor.BOLD + "MISSION COMPLETE "
+                    + ChatColor.GRAY + "» "
+                    + ChatColor.YELLOW + "You've successfully completed the "
+                    + ChatColor.GRAY  + "["+ mission.getMissionCategory().name().replace("_", " ") + "]"
+                    + ChatColor.YELLOW + " " + ChatColor.GOLD + "\"" + mission.getName() +  "\"" +  ChatColor.YELLOW + " quest\n"
+                    + ChatColor.GRAY + "Collect your XP via the "
+                    + ChatColor.YELLOW + "/battlepass "
+                    + ChatColor.GRAY + "menu!";
 
-        Mission mission = missionManager.getMissionById(missionId);
-        if (mission == null) return;
 
-        MissionProgress progress = data.getMissions().get(missionId);
-        if (progress != null) {
-            progress.setProgress(progress.getProgress() + amount);
-            progress.setLastUpdated(System.currentTimeMillis());
-        } else {
-            // New progress entry
-            progress = new MissionProgress(missionId, amount, false, System.currentTimeMillis(), mission.getMissionType());
-            data.getMissions().put(missionId, progress);
+            player.sendMessage(message);
         }
     }
 
@@ -86,10 +101,19 @@ public class PlayerDataManager {
         if (data == null) return;
 
         MissionProgress progress = data.getMissions().get(missionId);
+        Mission mission = getMissionById(missionId);
         if (progress != null) {
-            progress.setClaimed(true);
-            progress.setLastUpdated(System.currentTimeMillis());
-            giveRewards(uuid, missionManager.getMissionById(missionId).getReward());
+            Player player = Bukkit.getPlayer(uuid);
+            if (progress.getProgress() >= mission.getTarget()){
+                if (progress.isClaimed()) return;
+                player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_YES, 1 ,1);
+                progress.setClaimed(true);
+                progress.setLastUpdated(System.currentTimeMillis());
+                data.addXp(mission.getXp());
+                player.sendMessage("§aClaimed mission: §e" + mission.getName() + " [+" + mission.getXp() + "XP]");
+            }else{
+                player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1 ,1);
+            }
         }
     }
 
@@ -196,6 +220,71 @@ public class PlayerDataManager {
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
     }
 
+    public static void missionTriggerEvent(Player player, Object trigger, MissionType missionType, int amount, String missionId) {
+        UUID uuid = player.getUniqueId();
+        PlayerData playerData = allPlayers.get(uuid);
+        if (playerData == null) return;
+
+        Map<String, MissionProgress> missionProgresses = playerData.getMissions();
+
+        if (missionId != null) {
+            // Directly increment the specific mission without checking triggers
+            Mission mission = getMissionById(missionId);
+            if (mission == null) return;
+
+            MissionProgress progress = missionProgresses.computeIfAbsent(
+                    mission.getId(),
+                    id -> new MissionProgress(id, 0, false, System.currentTimeMillis(), missionType)
+            );
+
+            addProgress(mission, progress, player, missionProgresses, playerData, amount);
+
+        } else {
+            // Normal trigger-based behavior
+            List<Mission> missions = getMissionsByType(missionType);
+
+            for (Mission mission : missions) {
+                MissionProgress progress = missionProgresses.computeIfAbsent(
+                        mission.getId(),
+                        id -> new MissionProgress(id, 0, false, System.currentTimeMillis(), missionType)
+                );
+
+                List<Object> dataList = mission.getData();
+                boolean match = false;
+
+                if (dataList != null && !dataList.isEmpty()) {
+                    for (Object obj : dataList) {
+                        if (trigger instanceof Material mat) {
+                            Material missionMat = Material.matchMaterial(obj.toString());
+                            if (missionMat != null && missionMat == mat) {
+                                match = true;
+                                break;
+                            }
+                        } else if (trigger instanceof EntityType ent) {
+                            try {
+                                EntityType missionEnt = EntityType.valueOf(obj.toString().toUpperCase());
+                                if (missionEnt == ent) {
+                                    match = true;
+                                    break;
+                                }
+                            } catch (IllegalArgumentException ignored) {}
+                        } else if ("Walk".equals(trigger) || "Swim".equals(trigger) || "Sprint".equals(trigger)) {
+                            match = true;
+                        }
+                    }
+                } else {
+                    match = true;
+                }
+
+                if (match) {
+                    addProgress(mission, progress, player, missionProgresses, playerData, amount);
+                }
+            }
+        }
+    }
+
+
+
     // ---------------- Reward helper ----------------
 
     private static void giveRewards(UUID uuid, Reward reward) {
@@ -218,4 +307,5 @@ public class PlayerDataManager {
             case XP -> getPlayerData(uuid).setXp(getPlayerData(uuid).getXp() + (int) reward.getData());
         }
     }
+
 }

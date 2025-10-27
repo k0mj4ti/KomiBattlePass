@@ -4,11 +4,14 @@ import me.sheephun.komiBattlePass.enums.MissionCategory;
 import me.sheephun.komiBattlePass.enums.MissionType;
 
 public class MissionProgress {
-    private final String id;
+    private String id;
     private int progress;
     private boolean claimed;
     private long lastUpdated;
     private MissionType type;
+
+    public MissionProgress() {
+    }
 
     public MissionProgress(String id, int progress, boolean claimed, long lastUpdated, MissionType type){
         this.id = id;
@@ -28,6 +31,9 @@ public class MissionProgress {
 
     public void setProgress(int progress) {
         this.progress = progress;
+    }
+    public void addProgress(int progress) {
+        this.progress = this.progress + progress;
     }
 
     public boolean isClaimed() {

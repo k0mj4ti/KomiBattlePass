@@ -9,8 +9,7 @@ import me.sheephun.komiBattlePass.managers.BattlePassManager;
 import me.sheephun.komiBattlePass.managers.MissionManager;
 import me.sheephun.komiBattlePass.managers.PlayerDataManager;
 import me.sheephun.komiBattlePass.storage.Database;
-import me.sheephun.listeners.PlayerJoinListener;
-import me.sheephun.listeners.PlayerLeaveListener;
+import me.sheephun.listeners.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -48,6 +47,24 @@ public final class KomiBattlePass extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerLeaveListener(), this);
+        getServer().getPluginManager().registerEvents(new BreakBlockListener(), this);
+        getServer().getPluginManager().registerEvents(new CraftItemListener(), this);
+        getServer().getPluginManager().registerEvents(new FishingListener(), this);
+        getServer().getPluginManager().registerEvents(new KillEntityListener(), this);
+        getServer().getPluginManager().registerEvents(new KillPlayerListener(), this);
+        getServer().getPluginManager().registerEvents(new PlaceBlockListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerMoveListener(), this);
+        getServer().getPluginManager().registerEvents(new SmeltItemListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerDamageEntityListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerConsumeListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerBreedListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerInteractEntityListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerTameListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerEnchantItem(), this);
+        getServer().getPluginManager().registerEvents(new PlayerChangedWorldListener(), this);
+
+
+
 
         getCommand("battlepass").setExecutor(new Battlepass());
         getCommand("test").setExecutor(new test());

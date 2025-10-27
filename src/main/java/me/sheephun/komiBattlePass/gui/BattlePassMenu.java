@@ -14,6 +14,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import java.util.Map;
+import java.util.stream.IntStream;
 
 public class BattlePassMenu implements InventoryProvider {
 
@@ -101,8 +102,22 @@ public class BattlePassMenu implements InventoryProvider {
             if (page > 1) open(player, page - 1);
             player.playSound(player.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1, 1);
         }));
-        contents.set(5, 6, ClickableItem.of(IconUtil.nextPageIcon(), e -> {open(player, page + 1); player.playSound(player.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1, 1);}));
-        contents.set(5, 4, ClickableItem.of(IconUtil.backButtonIcon(), e -> {MainMenu.open(player); player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);}));
+
+        // Only show next page if there are more tiers
+        int nextStartLevel = page * tiersPerPage + 1;
+        boolean hasNextPage = IntStream.range(nextStartLevel, nextStartLevel + tiersPerPage).anyMatch(level -> freeTiers.containsKey(level) || premiumTiers.containsKey(level));
+
+        contents.set(5, 6, ClickableItem.of(IconUtil.nextPageIcon(), e -> {
+            if (hasNextPage) open(player, page + 1);
+            player.playSound(player.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1, 1);
+        }));
+
+
+        contents.set(5, 4, ClickableItem.of(IconUtil.backButtonIcon(), e -> {
+            MainMenu.open(player);
+            player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+        }));
+
     }
 
     @Override

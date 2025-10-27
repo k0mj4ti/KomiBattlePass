@@ -12,6 +12,7 @@ import java.util.*;
 public class MissionManager {
     private static MissionManager missionManagerInstance;
 
+
     private final static Map<String, Mission> dailyMissions = new HashMap<>();
     private final static Map<String, Mission> weeklyMissions = new HashMap<>();
     private final static Map<String, Mission> oneTimeMissions = new HashMap<>();
@@ -37,10 +38,8 @@ public class MissionManager {
 
         // Support both list-based and section-based formats
         if (config.isList(key)) {
-            // Example: daily: - id: ... (list)
             missionList = config.getMapList(key);
         } else if (config.isConfigurationSection(key)) {
-            // Example: daily: mission1: {id: ..., name: ...} (nested section)
             for (String id : config.getConfigurationSection(key).getKeys(false)) {
                 Map<String, Object> sectionMap = new HashMap<>();
                 for (String subKey : config.getConfigurationSection(key + "." + id).getKeys(false)) {
@@ -73,18 +72,17 @@ public class MissionManager {
                 String desc = (String) o.get("description");
                 int xp = (int) o.get("xp");
                 int targetCount = (int) o.get("target");
+                String item = (String) o.get("item");
 
                 MissionType type = MissionType.valueOf(((String) o.get("type")).toUpperCase());
 
-                // Parse rewards
-                List<Map<?, ?>> rewardsRaw = (List<Map<?, ?>>) o.get("rewards");
-                List<Reward> rewards = new ArrayList<>();
-                if (rewardsRaw != null) {
-                    for (Map<?, ?> r : rewardsRaw) {
-                        String rType = ((String) r.get("type")).toUpperCase();
-                        Object data = r.get("amount") != null ? r.get("amount") : r.get("data");
-                        rewards.add(new Reward(RewardType.valueOf(rType), data));
-                    }
+                // Parse data
+                List<?> dataRaw = (List<?>) o.get("data");
+                List<Object> data = new ArrayList<>();
+                if (dataRaw != null) {
+                    data.addAll(dataRaw);
+                } else {
+                    data = null;
                 }
 
                 Mission mission = new Mission(
@@ -94,8 +92,9 @@ public class MissionManager {
                         desc,
                         xp,
                         targetCount,
-                        category,
-                        new Reward(RewardType.MULTIPLE, rewards)
+                        data,
+                        item,
+                        category
                 );
 
                 target.put(id, mission);
@@ -110,15 +109,35 @@ public class MissionManager {
 
 
 
+
     public static Map<String, Mission> getDailyMissions() { return dailyMissions; }
     public static Map<String, Mission> getWeeklyMissions() { return weeklyMissions; }
     public static Map<String, Mission> getOneTimeMissions() { return oneTimeMissions; }
 
 
-    public Mission getMissionById(String id){
+    public static Mission getMissionById(String id){
         if(dailyMissions.containsKey(id)) return dailyMissions.get(id);
         if(weeklyMissions.containsKey(id)) return weeklyMissions.get(id);
         return oneTimeMissions.get(id);
+    }
+    public static List<Mission> getMissionsByType(MissionType missionType){
+        List<Mission> missions = new ArrayList<>();
+        for(Mission mission : dailyMissions.values()){
+            if (mission.getMissionType().equals(missionType)){
+                missions.add(mission);
+            }
+        }
+        for(Mission mission : weeklyMissions.values()){
+            if (mission.getMissionType().equals(missionType)){
+                missions.add(mission);
+            }
+        }
+        for(Mission mission : weeklyMissions.values()){
+            if (mission.getMissionType().equals(missionType)){
+                missions.add(mission);
+            }
+        }
+        return missions;
     }
     public static MissionManager getMissionManagerInstance(){
         return missionManagerInstance;

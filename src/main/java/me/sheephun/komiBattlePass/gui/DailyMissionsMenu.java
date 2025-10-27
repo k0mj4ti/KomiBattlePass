@@ -71,7 +71,7 @@ public class DailyMissionsMenu implements InventoryProvider {
             if (index < missions.size()) {
                 Mission mission = missions.get(index);
                 MissionProgress progress = PlayerDataManager.getMissionProgress(player.getUniqueId(), mission.getId());
-                contents.set(row, i, ClickableItem.of(mission.getIcon(progress), e -> {claimMission(player, mission); player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);}));
+                contents.set(row, i, ClickableItem.of(mission.getIcon(progress), e -> {claimMission(player, mission); }));
             } else {
                 contents.set(row, i, ClickableItem.empty(empty));
             }
@@ -80,7 +80,6 @@ public class DailyMissionsMenu implements InventoryProvider {
 
     private void claimMission(Player player, Mission mission) {
         PlayerDataManager.claimMission(player.getUniqueId(), mission.getId());
-        player.sendMessage("§aClaimed daily mission: §e" + mission.getName());
         open(player, page);
     }
 

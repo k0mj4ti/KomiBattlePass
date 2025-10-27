@@ -2,6 +2,7 @@ package me.sheephun.komiBattlePass.data;
 
 import me.sheephun.komiBattlePass.enums.MissionType;
 import me.sheephun.komiBattlePass.enums.MissionCategory;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -17,19 +18,21 @@ public class Mission {
     private String description;
     private int xp;
     private int target;
+    private List<Object> data;
+    private final String item;
     private MissionCategory missionCategory;
-    private Reward reward;
 
     public Mission(String id, MissionType missionType, String name, String description,
-                   int xp, int target, MissionCategory missionCategory, Reward reward) {
+                   int xp, int target, List<Object> data, String item, MissionCategory missionCategory) {
         this.id = id;
         this.missionType = missionType;
         this.name = name;
         this.description = description;
         this.xp = xp;
         this.target = target;
+        this.data = data;
+        this.item = item;
         this.missionCategory = missionCategory;
-        this.reward = reward;
     }
 
     public String getId() {
@@ -84,31 +87,59 @@ public class Mission {
         this.missionCategory = missionCategory;
     }
 
-    public Reward getReward() {
-        return reward;
-    }
-
-    public void setReward(Reward reward) {
-        this.reward = reward;
-    }
-
     public ItemStack getIcon(MissionProgress progress) {
-        ItemStack item = new ItemStack(Material.BOOK);
-        ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(name);
-        List<String> lore = new ArrayList<>();
-        lore.add("§e" + description);
-        lore.add("§7XP: " + xp);
-        if(progress != null) {
-            lore.add("§aProgress: " + progress.getProgress() + "/" + target);
-            lore.add(progress.isClaimed() ? "§6Claimed" : "§eNot Claimed");
+        Material material = Material.getMaterial(item.toUpperCase());
+        if (material == null) material = Material.BOOK;
+
+        ItemStack item;
+        if (progress == null) {
+            item = new ItemStack(material);
         } else {
-            lore.add("§eProgress: 0/" + target);
-            lore.add("§cNot Claimed");
+            item = new ItemStack(progress.isClaimed() ? Material.WRITABLE_BOOK : material);
         }
+
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(ChatColor.GOLD + "" + ChatColor.BOLD + name);
+
+        List<String> lore = new ArrayList<>();
+        lore.add(ChatColor.GRAY + description);
+        lore.add(ChatColor.GRAY + "XP: " + ChatColor.YELLOW + xp);
+
+        int totalBars = 10;
+        int currentProgress = progress != null ? progress.getProgress() : 0;
+        float progressPercent = Math.min((float) currentProgress / target, 1f);
+
+        int filledBars = Math.round(totalBars * progressPercent);
+        int emptyBars = totalBars - filledBars;
+
+        StringBuilder bar = new StringBuilder();
+        for (int i = 0; i < filledBars; i++) bar.append("§6█"); // orange filled
+        for (int i = 0; i < emptyBars; i++) bar.append("§7█"); // gray empty
+
+        lore.add(ChatColor.GRAY + "Progress: " + bar + ChatColor.YELLOW + String.format(" (%d/%d)", currentProgress, target));
+
+        // Claimed or not claimed
+        if (progress != null && progress.getProgress() >= target) {
+            lore.add(progress.isClaimed() ? ChatColor.YELLOW + "" + ChatColor.BOLD + "Reward Claimed"
+                    : ChatColor.YELLOW + "" + ChatColor.BOLD + "Reward Available");
+        } else if (progress != null) {
+            lore.add(ChatColor.GRAY + "Reward: Not Yet Available");
+        } else {
+            lore.add(ChatColor.GRAY + "Reward: Not Yet Available");
+        }
+
         meta.setLore(lore);
         item.setItemMeta(meta);
         return item;
+    }
+
+
+    public List<Object> getData() {
+        return data;
+    }
+
+    public void setData(List<Object> data) {
+        this.data = data;
     }
 }
 

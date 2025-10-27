@@ -2,13 +2,11 @@ package me.sheephun.komiBattlePass.enums;
 
 public enum MissionType {
     KILL_PLAYER,
-    KILL_ANIMAL,
+    KILL_ENTITY,
     DEAL_DAMAGE,
 
     PLACE_BLOCK,
     BREAK_BLOCK,
-    MINE_ORE,
-    CHOP_WOOD,
     FISH,
     CRAFT_ITEM,
     SMELT_ITEM,
@@ -16,6 +14,16 @@ public enum MissionType {
     WALK_DISTANCE,
     SPRINT_DISTANCE,
     SWIM_DISTANCE,
+
+    CONSUME_ITEM,
+    BREED_ANIMAL,
+    SHEAR_ENTITY,
+    MILK_COW,
+    TAME_ENTITY,
+    FEED_ENTITY,
+    ENCHANT_ITEM,
+    ENTER_DIMENSION,
+
 
     EXTERNAL
 }
